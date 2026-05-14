@@ -1,0 +1,57 @@
+groups:
+  - name: système
+    rules:
+
+      - alert: CPU_Eleve
+        expr: 100 - (avg by(instance) (rate(node_cpu_seconds_total{mode="idle"}[2m])) * 100) > 80
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "CPU élevé sur {{ $labels.instance }}"
+          description: "Utilisation CPU > 80% depuis 2 minutes (valeur actuelle: {{ $value }}%)"
+
+      - alert: CPU_Critique
+        expr: 100 - (avg by(instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 95
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "CPU critique sur {{ $labels.instance }}"
+          description: "Utilisation CPU > 95% depuis 5 minutes (valeur actuelle: {{ $value }}%)"
+
+      - alert: RAM_Faible
+        expr: (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes) * 100 < 10
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "RAM faible sur {{ $labels.instance }}"
+          description: "Mémoire disponible < 10% (valeur actuelle: {{ $value }}%)"
+
+      - alert: Disque_Plein
+        expr: (node_filesystem_avail_bytes{fstype!~"tmpfs|fuse.lxcfs"} / node_filesystem_size_bytes) * 100 < 15
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Disque presque plein sur {{ $labels.instance }}"
+          description: "Espace disque disponible < 15% sur {{ $labels.mountpoint }}"
+
+      - alert: Disque_Critique
+        expr: (node_filesystem_avail_bytes{fstype!~"tmpfs|fuse.lxcfs"} / node_filesystem_size_bytes) * 100 < 5
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Disque critique sur {{ $labels.instance }}"
+          description: "Espace disque disponible < 5% sur {{ $labels.mountpoint }}"
+
+      - alert: Hote_Inaccessible
+        expr: up == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Hôte inaccessible : {{ $labels.instance }}"
+          description: "L'hôte {{ $labels.instance }} est down depuis plus d'1 minute"
