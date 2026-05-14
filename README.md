@@ -1,7 +1,6 @@
 # 🖥️ Homelab – Supervision Réseau (Prometheus + Grafana)
 
-> Projet personnel – Monitoring & Observabilité réseau  
-> Certification Expert Informatique SI – RNCP Niveau 7 | EPSI
+> Monitoring & Observabilité réseau  
 
 ---
 
@@ -121,8 +120,6 @@ docker-compose down
 
 ---
 
-## 👤 Réalisé par
 
-Projet personnel – Supervision et observabilité réseau  
-**Expert Informatique et Système d'Information – RNCP Niveau 7**  
-EPSI | Promotion 2024-2026
+
+
