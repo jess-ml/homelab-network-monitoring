@@ -1,0 +1,37 @@
+global:
+  resolve_timeout: 5m
+  smtp_smarthost: 'smtp.gmail.com:587'
+  smtp_from: 'alertes@monhomelab.com'
+  smtp_auth_username: 'TON-EMAIL@gmail.com'
+  smtp_auth_password: 'TON-MOT-DE-PASSE-APP'
+
+route:
+  group_by: ['alertname', 'instance']
+  group_wait: 30s
+  group_interval: 5m
+  repeat_interval: 12h
+  receiver: 'email-alertes'
+  routes:
+    - match:
+        severity: critical
+      receiver: 'email-alertes'
+      repeat_interval: 1h
+    - match:
+        severity: warning
+      receiver: 'email-alertes'
+      repeat_interval: 6h
+
+receivers:
+  - name: 'email-alertes'
+    email_configs:
+      - to: 'TON-EMAIL@gmail.com'
+        send_resolved: true
+        headers:
+          Subject: '[HOMELAB] {{ .Status | toUpper }} - {{ .CommonAnnotations.summary }}'
+
+inhibit_rules:
+  - source_match:
+      severity: 'critical'
+    target_match:
+      severity: 'warning'
+    equal: ['instance']
